@@ -3,11 +3,12 @@ const playBtn = document.querySelector("#play");
 const prevBtn = document.querySelector("#prev");
 const nextBtn = document.querySelector("#next");
 const song = document.querySelector("#song");
-const progress = document.querySelector(".progress");
+const progress = document.querySelector(".progressBar");
 const progressContainer = document.querySelector(".progress-container");
 const title = document.querySelector("#title");
 const cover = document.querySelector(".music-cover");
 const loading = document.querySelector(".loading");
+const songList = document.querySelector(".song-list");
 
 // loading
 setTimeout(()=>{
@@ -21,8 +22,8 @@ const songs = [
 	"Galti hazar hunchan",
 	"Yellow",
 	"Maneskin - Beggin",
+    "driver license"
 ];
-
 
 //track song
 let songIndex = 0;
@@ -30,15 +31,34 @@ let songIndex = 0;
 // loading song info in DOM
 loadSong(songs[songIndex]);
 
+// loading song info in DOM
+for (let i = 0; i < songs.length; i++) {
+    const song = songs[i];
+
+    const li = document.createElement("li");
+    li.innerText = song;
+
+    li.onclick = () => {
+        document.querySelector(".red-text").classList.remove("red-text")
+        li.classList.add("red-text")
+        songIndex = i;
+		loadSong(songs[songIndex]);
+        playSong();
+    }
+
+    if (i === 0) {
+        li.classList.add("red-text")
+    }
+
+    songList.appendChild(li)
+}
+
 //update song details
 function loadSong(songName) {
 	title.innerText = songName;
 	song.src = `songs/${songName}.mp3`;
 	cover.src = `images/${songName}.jpg`;
-	console.log(songName)
 }
-
-
 
 function playSong() {
 	musicContainer.classList.add("play");
@@ -55,13 +75,36 @@ function pauseSong() {
 }
 
 function nextSong() {
-	if (songIndex < 4) {
+	if (songIndex < 5) {
 		songIndex++;
 		loadSong(songs[songIndex]);
 	} else {
 		songIndex = 0;
 		loadSong(songs[songIndex]);
 	}
+
+    songList.innerHTML = "";
+
+    for (let i = 0; i < songs.length; i++) {
+        const song = songs[i];
+    
+        const li = document.createElement("li");
+        li.innerText = song;
+
+        li.onclick = () => {
+            document.querySelector(".red-text").classList.remove("red-text")
+            li.classList.add("red-text")
+            songIndex = i;
+            loadSong(songs[songIndex]);
+            playSong();
+        }
+    
+        if (i === songIndex) {
+            li.classList.add("red-text")
+        }
+    
+        songList.appendChild(li)
+    }
 	playSong();
 }
 
@@ -70,9 +113,32 @@ function prevSong() {
 		songIndex--;
 		loadSong(songs[songIndex]);
 	} else {
-		songIndex = 4;
+		songIndex = 5;
 		loadSong(songs[songIndex]);
 	}
+    
+    songList.innerHTML = "";
+
+    for (let i = 0; i < songs.length; i++) {
+        const song = songs[i];
+    
+        const li = document.createElement("li");
+        li.innerText = song;
+
+        li.onclick = () => {
+            document.querySelector(".red-text").classList.remove("red-text")
+            li.classList.add("red-text")
+            songIndex = i;
+            loadSong(songs[songIndex]);
+            playSong();
+        }
+    
+        if (i === songIndex) {
+            li.classList.add("red-text")
+        }
+    
+        songList.appendChild(li)
+    }
 	playSong();
 }
 
@@ -107,18 +173,3 @@ nextBtn.addEventListener("click", nextSong);
 song.addEventListener("timeupdate", updateProgress);
 progressContainer.addEventListener("click", setProgress);
 song.addEventListener("ended", nextSong);
-
-
-//Song Lists
-for(i=0;songs.length>i;i++){
-	console.log(songs[i])
-	function clickSong(songName) {
-		title.innerText = songName;
-		song.src = `songs/${songName}.mp3`;
-		cover.src = `images/${songName}.jpg`;
-		songIndex=i
-		console.log(songName)
-		playSong();
-	}
-	document.getElementById('songList').innerHTML += `<br><button onclick="clickSong('${songs[i]}')" style="width:20rem;text-align:left;margin-bottom:.5rem;background-color:black;color:white;margin-left: 50%;transform: translate(-50%);">${songs[i]}</button>`;
-}
